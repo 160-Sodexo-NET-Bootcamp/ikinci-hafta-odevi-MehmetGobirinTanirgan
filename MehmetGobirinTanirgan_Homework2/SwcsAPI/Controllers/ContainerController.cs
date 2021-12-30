@@ -42,7 +42,7 @@ namespace SwcsAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddContainer([FromBody] ContainerCreateDto reqContainer)
         {
-            // Manuel mapping
+            // Manuel mapping ile direk iki farklı türü birbirine çevirme
             var newContainer = new Container
             {
                 ContainerName = reqContainer.ContainerName,
@@ -75,6 +75,7 @@ namespace SwcsAPI.Controllers
                     return BadRequest(new { Message = "Container doesn't exist." });
                 }
 
+                //Manuel mapping
                 existingContainer.ContainerName = reqContainer.ContainerName ?? existingContainer.ContainerName;
                 existingContainer.Latitude = reqContainer.Latitude != default ? reqContainer.Latitude : existingContainer.Latitude;
                 existingContainer.Longitude = reqContainer.Longitude != default ? reqContainer.Longitude : existingContainer.Longitude;

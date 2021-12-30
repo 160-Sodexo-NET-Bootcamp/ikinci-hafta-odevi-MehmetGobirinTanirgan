@@ -21,6 +21,7 @@ namespace SwcsAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllVehicles()
         {
+            //Direkt olarak try-catch kullanarak sorun olması durumunda mesajı gönderdim.
             try
             {
                 var allVehicles = await unitOfWork.Vehicles.GetAllAsync();

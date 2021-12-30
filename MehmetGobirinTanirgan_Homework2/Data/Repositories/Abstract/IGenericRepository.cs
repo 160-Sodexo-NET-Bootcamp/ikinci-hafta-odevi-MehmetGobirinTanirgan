@@ -9,6 +9,7 @@ namespace Data.Repositories.Abstract
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {
+        // Temel database işlemleri
         Task AddAsync(T entity);
         void Update(T entity);
         Task DeleteAsync(long id);

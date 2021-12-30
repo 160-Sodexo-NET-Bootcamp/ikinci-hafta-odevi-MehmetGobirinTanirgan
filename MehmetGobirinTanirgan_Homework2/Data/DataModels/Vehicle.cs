@@ -7,6 +7,6 @@ namespace Data.DataModels
     {
         public string VehicleName { get; set; }
         public string VehiclePlate { get; set; }
-        public virtual List<Container> Containers { get; set; }
+        public virtual List<Container> Containers { get; set; } //Navigation property
     }
 }

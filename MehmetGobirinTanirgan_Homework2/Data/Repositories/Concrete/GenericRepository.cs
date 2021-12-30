@@ -19,6 +19,7 @@ namespace Data.Repositories.Concrete
             this.context = context;
         }
 
+        // Temel database işlemleri
         public virtual async Task AddAsync(T entity)
         {
             await context.Set<T>().AddAsync(entity);

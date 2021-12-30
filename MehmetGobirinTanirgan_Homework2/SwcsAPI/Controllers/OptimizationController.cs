@@ -39,7 +39,7 @@ namespace SwcsAPI.Controllers
                     return NoContent();
                 }
 
-                if (n > containerCt / 2)
+                if (n > containerCt / 2) // Bu sınırı ben koydum. Kayıt sayısının yarısını geçmesini istemedim.
                 {
                     return BadRequest(new { Message = "Number of clusters cannot be higher then " + containerCt / 2 });
                 }
