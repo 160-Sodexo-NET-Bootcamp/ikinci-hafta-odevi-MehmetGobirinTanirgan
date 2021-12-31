@@ -32,9 +32,9 @@ namespace SwcsAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SwcsAPI", Version = "v1" });
             });
+            //Connection string User Secrets içerisinden çekiliyor. 
             services.AddDbContext<SwcsDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MsSqlConStr")));
 
-            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
