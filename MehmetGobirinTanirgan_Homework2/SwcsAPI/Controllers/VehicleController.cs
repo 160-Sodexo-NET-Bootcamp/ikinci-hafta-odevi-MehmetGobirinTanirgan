@@ -96,7 +96,7 @@ namespace SwcsAPI.Controllers
 
             try
             {
-                await unitOfWork.Vehicles.DeleteAsync(id);
+                unitOfWork.Vehicles.Delete(id);
                 await unitOfWork.Containers.DeleteRangeByExpressionAsync(x => x.VehicleId == id);
                 await unitOfWork.SaveAsync();
                 return Ok();

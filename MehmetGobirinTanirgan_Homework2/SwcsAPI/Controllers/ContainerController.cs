@@ -101,7 +101,7 @@ namespace SwcsAPI.Controllers
 
             try
             {
-                await unitOfWork.Containers.DeleteAsync(id);
+                unitOfWork.Containers.Delete(id);
                 await unitOfWork.SaveAsync();
                 return Ok();
             }

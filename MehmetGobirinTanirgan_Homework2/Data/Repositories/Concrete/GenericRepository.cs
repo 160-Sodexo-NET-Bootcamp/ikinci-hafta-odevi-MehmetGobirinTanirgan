@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data.Repositories.Concrete
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
+    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
     {
         private readonly SwcsDbContext context;
 
@@ -29,9 +29,9 @@ namespace Data.Repositories.Concrete
             context.Set<T>().Update(entity);
         }
 
-        public virtual async Task DeleteAsync(long id)
+        public virtual void Delete(long id)
         {
-            context.Set<T>().Remove(await GetByIdAsync(id));
+            context.Set<T>().Remove(new T { Id = id });
         }
 
         public virtual async Task DeleteRangeByExpressionAsync(Expression<Func<T, bool>> exp)

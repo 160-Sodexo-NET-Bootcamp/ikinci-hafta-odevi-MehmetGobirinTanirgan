@@ -12,7 +12,7 @@ namespace Data.Repositories.Abstract
         // Temel database işlemleri
         Task AddAsync(T entity);
         void Update(T entity);
-        Task DeleteAsync(long id);
+        void Delete(long id);
         Task DeleteRangeByExpressionAsync(Expression<Func<T, bool>> exp);
         Task<T> GetByIdAsync(long id);
         Task<T> GetByExpression(Expression<Func<T, bool>> exp);
