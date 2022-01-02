@@ -41,7 +41,7 @@ namespace SwcsAPI.Extensions
             return clusteredList;
         }
 
-        public static List<List<Container>> ToKMeansCluster(this List<Container> containers, int n)
+        public static List<List<Container>> ToKMeansClusters(this List<Container> containers, int n)
         {
             var containerCt = containers.Count; //Container sayısı.
             var clusteredContainers = new List<List<Container>>(); //Result olarak döneceğim liste.
@@ -92,7 +92,7 @@ namespace SwcsAPI.Extensions
                                                                                    // container'lara göre, küme merkezlerini
                                                                                    // tekrardan bularak, güncellemiş oluyorum.
 
-            } while (!snapshotOfClusteredContainers.IsSame(clusteredContainers, n));// Eğer ki yeni küme listem, bir önceki
+            } while (!snapshotOfClusteredContainers.IsItSame(clusteredContainers, n));// Eğer ki yeni küme listem, bir önceki
                                                                                     // süreçte ki haliyle aynı ise devam etme,
                                                                                     // döngüyü kır. Çünkü artık küme merkezleri
                                                                                     // değişmeyecek ve stabil bir sonuca
@@ -132,7 +132,7 @@ namespace SwcsAPI.Extensions
             return clusteredContainers;
         }
 
-        private static bool IsSame(this List<List<Container>> snapshot, List<List<Container>> current, int n)
+        private static bool IsItSame(this List<List<Container>> snapshot, List<List<Container>> current, int n)
         {
             // Result listemdeki her bir küme(liste), bir önceki halinin kümeleriyle aynı ise true dön, değilse false dön.
             for (int i = 0; i < n; i++)

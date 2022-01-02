@@ -18,7 +18,7 @@ namespace SwcsAPI.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet]// Tüm vehicle'ları getir
         public async Task<IActionResult> GetAllVehicles()
         {
             //Direkt olarak try-catch kullanarak sorun olması durumunda mesajı gönderdim.
@@ -39,7 +39,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost]// Vehicle ekleme
         public async Task<IActionResult> AddVehicle([FromBody] VehicleCreateDto reqVehicle)
         { 
             // Manuel mapping
@@ -62,7 +62,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut]// Vehicle güncelleme
         public async Task<IActionResult> UpdateVehicle([FromBody] VehicleUpdateDto reqVehicle)
         {
             try
@@ -86,7 +86,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")] // Hard delete
+        [HttpDelete("{id}")] // Vehicle'ı ve ona ait tüm container'ları silme
         public async Task<IActionResult> DeleteVehicle([FromRoute] long id)
         {
             if (id <= 0)

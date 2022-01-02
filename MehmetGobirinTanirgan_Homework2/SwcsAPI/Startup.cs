@@ -26,12 +26,13 @@ namespace SwcsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            // Ýç içe iliþkileri denerken, loop hatasý aldýðým için burda NewtonsoftJson servisi ekledim.
             services.AddControllers().AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SwcsAPI", Version = "v1" });
             });
+
             //Connection string User Secrets içerisinden çekiliyor. 
             services.AddDbContext<SwcsDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("MsSqlConStr")));
 

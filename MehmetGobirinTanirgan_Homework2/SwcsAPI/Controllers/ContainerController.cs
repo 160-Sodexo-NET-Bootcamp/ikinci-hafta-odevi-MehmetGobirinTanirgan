@@ -20,7 +20,7 @@ namespace SwcsAPI.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpGet]
+        [HttpGet]// Tüm container'ları getir
         public async Task<IActionResult> GetAll()
         {
             try
@@ -39,10 +39,10 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost]// Container ekleme
         public async Task<IActionResult> AddContainer([FromBody] ContainerCreateDto reqContainer)
         {
-            // Manuel mapping ile direk iki farklı türü birbirine çevirme
+            // Manuel mapping ile iki farklı türü birbirine çevirme
             var newContainer = new Container
             {
                 ContainerName = reqContainer.ContainerName,
@@ -64,7 +64,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut]// Container güncelleme
         public async Task<IActionResult> UpdateContainer([FromBody] ContainerUpdateDto reqContainer)
         {
             try
@@ -91,7 +91,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")]// Container silme
         public async Task<IActionResult> DeleteContainer([FromRoute] long id)
         {
             if (id <= 0)
@@ -112,7 +112,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpGet("{vehicleId}")]
+        [HttpGet("{vehicleId}")]// Gelen vehicle id'ye ait container'ları getirme
         public async Task<IActionResult> GetContainersOfVehicle([FromRoute] long vehicleId)
         {
             if (vehicleId <= 0)
@@ -137,7 +137,7 @@ namespace SwcsAPI.Controllers
             }
         }
 
-        [HttpGet("{vehicleId}/{n}")]
+        [HttpGet("{vehicleId}/{n}")]// Gelen vehicle id'ye ait container'ları n adet eşit büyüklükte kümeye ayırma
         public async Task<IActionResult> GetClusteredContainersOfVehicle([FromRoute] long vehicleId, int n)
         {
             if (vehicleId <= 0 || n <= 0)

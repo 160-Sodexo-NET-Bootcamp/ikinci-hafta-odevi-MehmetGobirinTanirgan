@@ -4,7 +4,7 @@ namespace Data.DataModels.Base
 {
     public class BaseEntity : IEntity
     {
-        [Key]
+        [Key]//Primary key attribute
         public long Id { get; set; }
     }
 }

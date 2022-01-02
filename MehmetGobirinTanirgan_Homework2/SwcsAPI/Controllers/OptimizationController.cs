@@ -20,7 +20,7 @@ namespace SwcsAPI.Controllers
             this.unitOfWork = unitOfWork;
         }
 
-        [HttpGet("{vehicleId}/{n}")]
+        [HttpGet("{vehicleId}/{n}")]// K Means algoritmasına göre n adet kümeye ayırma
         public async Task<IActionResult> GetOptimizedClusters([FromRoute] long vehicleId, int n)
         {
             if (vehicleId <= 0 || n <= 0)
@@ -49,7 +49,7 @@ namespace SwcsAPI.Controllers
                     return Ok(containersOfVehicle);
                 }
 
-                var responseList = containersOfVehicle.ToKMeansCluster(n);
+                var responseList = containersOfVehicle.ToKMeansClusters(n);
                 return Ok(responseList);
             }
             catch (Exception ex)
