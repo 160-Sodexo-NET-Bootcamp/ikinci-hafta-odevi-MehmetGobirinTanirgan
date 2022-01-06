@@ -9,7 +9,7 @@ VehiclePlate nvarchar(14)
 --Creating container table
 create table Containers
 (
-Id bigint identity(1,1) primary key,
+Id bigint primary key identity(1,1),
 ContainerName nvarchar(50),
 Latitude decimal(10,6),
 Longitude decimal(10,6),

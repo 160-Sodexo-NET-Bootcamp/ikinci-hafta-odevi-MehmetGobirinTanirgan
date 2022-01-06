@@ -1,4 +1,4 @@
-﻿namespace SwcsAPI.Extensions.HelperModels
+﻿namespace SwcsAPI.HelperModels
 {
     public struct LatLong // Koordinatları tutmak için bir struct oluşturuldu.
     {

@@ -1,6 +1,4 @@
 using Data.Context;
-using Data.Repositories.Abstract;
-using Data.Repositories.Concrete;
 using Data.Uow.Abstract;
 using Data.Uow.Concrete;
 using Microsoft.AspNetCore.Builder;

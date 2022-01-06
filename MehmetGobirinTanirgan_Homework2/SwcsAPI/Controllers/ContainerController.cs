@@ -31,7 +31,8 @@ namespace SwcsAPI.Controllers
                 {
                     return NoContent();
                 }
-                return Ok(allContainers);
+                return Ok(allContainers); // Ödevde tüm actionlarda sonuçları incelemek amaçlı model döndürdüm ancak Client'ın
+                                          // ihtiyacına yönelik bir dto oluşturup gönderebiliriz. 
             }
             catch (Exception ex)
             {

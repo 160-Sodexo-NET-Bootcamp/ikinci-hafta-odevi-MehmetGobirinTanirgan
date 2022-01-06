@@ -1,46 +1,14 @@
 ﻿using Data.DataModels;
-using Data.DataModels.Base;
-using SwcsAPI.Extensions.HelperModels;
+using SwcsAPI.HelperModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace SwcsAPI.Extensions
 {
-    public static class LogicExtensions
+    public static class ContainerExtensions
     {
-        public static List<List<T>> ToClusters<T>(this List<T> incomingList, int n) where T : BaseEntity
-        {
-            //Bu metot ile ilgili container listesini eşit kümelere bölüyoruz.
-            var clusteredList = new List<List<T>>();
-            var containerCt = incomingList.Count;
-            var lengthOfCluster = (int)(Math.Ceiling((double)containerCt / n)); //Bir kümenin kaç adet container'dan
-                                                                                //oluşması gerektiğini bu şekilde hesapladım.
-
-            //Eğer ki container sayısı, küme sayısına tam bölünüyorsa direkt olarak container listesini parçalayabiliriz demektir. Aksi takdirde son küme, diğer kümelerden eksik adette olabilecek şekilde ayarlamak istedim.
-            if (containerCt % n == 0)
-            {
-                for (int i = 0; i < n; i++) //Küme sayısı kadar dön.
-                {
-                    //Küme boyutu kadar atla, küme boyutu kadar al mantığı uygulayarak listeyi parçaladım.
-                    clusteredList.Add(incomingList.Skip(i * lengthOfCluster).Take(lengthOfCluster).ToList());
-                }
-            }
-            else
-            {
-                //Burada tek fark son kümeyi TakeLast metotu ile kendim yakalayıp, for döngüsünde de n-1 sınırı koyarak
-                //son kümeyle ilgilenmemesini sağladım.
-                var lastCluster = incomingList.TakeLast(containerCt % n).ToList();
-                for (int i = 0; i < n - 1; i++)
-                {
-                    clusteredList.Add(incomingList.Skip(i * lengthOfCluster).Take(lengthOfCluster).ToList());
-                }
-                clusteredList.Add(lastCluster);
-            }
-
-            return clusteredList;
-        }
-
+       
         public static List<List<Container>> ToKMeansClusters(this List<Container> containers, int n)
         {
             var containerCt = containers.Count; //Container sayısı.
@@ -48,8 +16,8 @@ namespace SwcsAPI.Extensions
             List<List<Container>> snapshotOfClusteredContainers;// Algoritma içerisinde result listemi bir önceki haliyle
                                                                 // kıyaslamak için tanımladığım liste.
             var clusterCenters = new List<LatLong>(); //Kümelerin merkezlerini tutan liste.
-                                                      
-            
+
+
             //Başlangıç için n tane boş küme, yani liste ekledim. Bu n tane küme için başlangıç merkezlerini,
             //ilk n tane container'ın koordinatlarıyla eşleştirdim.
             for (int i = 0; i < n; i++)
@@ -63,7 +31,7 @@ namespace SwcsAPI.Extensions
             do
             {
                 // Burada result listemin algoritmaya girmeden önceki anlık halini kopyalamış oldum.
-                snapshotOfClusteredContainers = clusteredContainers.ToList(); 
+                snapshotOfClusteredContainers = clusteredContainers.ToList();
 
                 // Burada da her algoritma girişi öncesinde result listemi resetleyerek, boş n tane küme haline getirip,
                 // yeni oluşan küme merkezi koordinatlarına göre container'ların ilgili kümeye atılmasını sağladım.
@@ -84,35 +52,29 @@ namespace SwcsAPI.Extensions
 
                     clusteredContainers[indexForFarthestCluster].Add(containers[i]);//Burda da bulduğum küme index'i ile ilgili
                                                                                     //kümeye, ilgili container'ımı ekliyorum.
+                                                                                    
+                    
+                    //Bu kısımda ise container en yakın olduğu kümeye eklendikten sonra, o kümenin yeni kitle merkezini hesaplayarak,
+                    //küme merkezlerini sürekli güncel tutmuş oluyorum.
+                    clusterCenters[indexForFarthestCluster] = clusteredContainers[indexForFarthestCluster].CalculateCenterOfCluster(); 
                 }
 
-                clusterCenters = clusteredContainers.CalculateCenterOfClusters(n); // Tüm container'lar ile ilgili süreç
-                                                                                   // tamamlandıktan sonra, oluştan küme
-                                                                                   // listesinin içinde barındırdığı
-                                                                                   // container'lara göre, küme merkezlerini
-                                                                                   // tekrardan bularak, güncellemiş oluyorum.
-
             } while (!snapshotOfClusteredContainers.IsItSame(clusteredContainers, n));// Eğer ki yeni küme listem, bir önceki
-                                                                                    // süreçte ki haliyle aynı ise devam etme,
-                                                                                    // döngüyü kır. Çünkü artık küme merkezleri
-                                                                                    // değişmeyecek ve stabil bir sonuca
-                                                                                    // ulaşmışım anlamına gelecek.
+                                                                                      // süreçte ki haliyle aynı ise devam etme,
+                                                                                      // döngüyü kır. Çünkü artık küme merkezleri
+                                                                                      // değişmeyecek ve stabil bir sonuca
+                                                                                      // ulaşmışım anlamına gelecek.
 
             return clusteredContainers; // Algoritma tamamlandı. Result'ı dön.
         }
 
         #region K Means Helper Methods
-        private static List<LatLong> CalculateCenterOfClusters(this List<List<Container>> clusteredContainers, int n)
+        private static LatLong CalculateCenterOfCluster(this List<Container> containersOfCluster)
         {
-            var newCenters = new List<LatLong>(); // Küme merkezlerimin yeni halini barındıracak liste.
-            for (int i = 0; i < n; i++)// Her küme için aşağıdaki merkez bulma işlemlerini yap.
-            {
-                // Enlem ve boylam değerlerinin ortalamalarını yeni merkez olarak belirle.
-                var latitudeAvg = clusteredContainers[i].Average(x => x.Latitude);  
-                var longitudeAvg = clusteredContainers[i].Average(x => x.Longitude);
-                newCenters.Add(new LatLong { Latitude = latitudeAvg, Longitude = longitudeAvg });
-            }
-            return newCenters;//Yeni merkez listesini dön.
+            // Enlem ve boylam değerlerinin ortalamalarını yeni merkez olarak belirle
+            var latitudeAvg = containersOfCluster.Average(x => x.Latitude);
+            var longitudeAvg = containersOfCluster.Average(x => x.Longitude);
+            return new LatLong { Latitude = latitudeAvg, Longitude = longitudeAvg }; //Yeni merkez koordinatını dön.
         }
 
         private static double CalculateDistance(LatLong clusterCenter, Container container)
@@ -145,6 +107,5 @@ namespace SwcsAPI.Extensions
             return true;
         }
         #endregion
-
     }
 }
