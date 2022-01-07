@@ -1,6 +1,5 @@
 ﻿using Data.DataModels.Base;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -16,7 +15,7 @@ namespace Data.Repositories.Abstract
         Task DeleteRangeByExpressionAsync(Expression<Func<T, bool>> exp);
         Task<T> GetByIdAsync(long id);
         Task<T> GetByExpression(Expression<Func<T, bool>> exp);
-        Task<IEnumerable<T>> GetAllAsync();
+        IQueryable<T> GetAll();
         IQueryable<T> GetListByExpression(Expression<Func<T, bool>> exp);
     }
 }

@@ -1,10 +1,8 @@
-﻿using Data.DataModels;
-using Data.Uow.Abstract;
+﻿using Data.Uow.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SwcsAPI.Extensions;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SwcsAPI.Controllers
@@ -34,7 +32,7 @@ namespace SwcsAPI.Controllers
                    GetListByExpression(x => x.VehicleId == vehicleId).ToListAsync();
                 var containerCt = containersOfVehicle.Count;          
 
-                if (containersOfVehicle is null)
+                if (containerCt == 0)
                 {
                     return NoContent();
                 }

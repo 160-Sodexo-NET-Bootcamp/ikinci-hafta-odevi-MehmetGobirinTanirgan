@@ -3,7 +3,6 @@ using Data.DataModels.Base;
 using Data.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -21,44 +20,53 @@ namespace Data.Repositories.Concrete
 
         // Temel database işlemleri, burada context üzerinden temelde tüm entity'ler
         // için kullanabileceğim aksiyonları yazmış oldum.
+
+        // Entity ekleme
         public virtual async Task AddAsync(T entity)
         {
-            await context.Set<T>().AddAsync(entity);// Entity ekleme
+            await context.Set<T>().AddAsync(entity);
         }
 
+        // Entity güncelleme
         public virtual void Update(T entity)
         {
-            context.Set<T>().Update(entity);// Entity güncelleme
+            context.Set<T>().Update(entity);
         }
 
+        // Id üzerinden entity silme
         public virtual void Delete(long id)
         {
-            context.Set<T>().Remove(new T { Id = id }); // Id üzerinden entity silme
+            context.Set<T>().Remove(new T { Id = id });
         }
 
+        // Gelen expression'a göre toplu entity silme
         public virtual async Task DeleteRangeByExpressionAsync(Expression<Func<T, bool>> exp)
         {
-            context.Set<T>().RemoveRange(await GetListByExpression(exp).ToListAsync()); // Gelen expression'a göre toplu entity silme
+            context.Set<T>().RemoveRange(await GetListByExpression(exp).ToListAsync());
         }
 
+        // Gelen expression'a göre entity getirme
         public virtual async Task<T> GetByExpression(Expression<Func<T, bool>> exp)
         {
-            return await context.Set<T>().FirstOrDefaultAsync(exp); // Gelen expression'a göre entity getirme
+            return await context.Set<T>().FirstOrDefaultAsync(exp);
         }
 
+        // Id üzerinden entity getirme
         public virtual async Task<T> GetByIdAsync(long id)
         {
-            return await context.Set<T>().FindAsync(id); // Id üzerinden entity getirme
+            return await context.Set<T>().FindAsync(id);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        // Tüm tabloyu çekme
+        public virtual IQueryable<T> GetAll()
         {
-            return await context.Set<T>().ToListAsync();// Tüm tabloyu çekme
+            return context.Set<T>();
         }
 
+        // Gelen expression'a göre filtrelenmiş liste çekme
         public virtual IQueryable<T> GetListByExpression(Expression<Func<T, bool>> exp)
         {
-            return context.Set<T>().Where(exp);// Gelen expression'a göre filtrelenmiş liste çekme
+            return context.Set<T>().Where(exp);
         } 
     }
 }

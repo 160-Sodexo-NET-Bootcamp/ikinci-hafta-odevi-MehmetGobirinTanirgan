@@ -1,6 +1,7 @@
 ﻿using Data.DataModels;
 using Data.Uow.Abstract;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SwcsAPI.Dtos;
 using System;
 using System.Threading.Tasks;
@@ -24,8 +25,8 @@ namespace SwcsAPI.Controllers
             //Direkt olarak try-catch kullanarak sorun olması durumunda mesajı gönderdim.
             try
             {
-                var allVehicles = await unitOfWork.Vehicles.GetAllAsync();
-                if (allVehicles is null)
+                var allVehicles = await unitOfWork.Vehicles.GetAll().ToListAsync();
+                if (allVehicles.Count == 0)
                 {
                     return NoContent();
                 }
@@ -41,7 +42,7 @@ namespace SwcsAPI.Controllers
 
         [HttpPost]// Vehicle ekleme
         public async Task<IActionResult> AddVehicle([FromBody] VehicleCreateDto reqVehicle)
-        { 
+        {
             // Manuel mapping
             var newVehicle = new Vehicle
             {
@@ -67,15 +68,15 @@ namespace SwcsAPI.Controllers
         {
             try
             {
-                var existingVehicle = await unitOfWork.Vehicles.GetByIdAsync((long)reqVehicle.Id);
+                var existingVehicle = await unitOfWork.Vehicles.GetByIdAsync(reqVehicle.Id);
 
                 if (existingVehicle is null)
                 {
                     return BadRequest("Vehicle does not exist.");
                 }
-               
-                existingVehicle.VehicleName = reqVehicle.VehicleName ?? existingVehicle.VehicleName;
-                existingVehicle.VehiclePlate = reqVehicle.VehiclePlate ?? existingVehicle.VehiclePlate;
+
+                existingVehicle.VehicleName = reqVehicle.VehicleName;
+                existingVehicle.VehiclePlate = reqVehicle.VehiclePlate;
                 unitOfWork.Vehicles.Update(existingVehicle);
                 await unitOfWork.SaveAsync();
                 return Ok();

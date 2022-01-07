@@ -25,9 +25,9 @@ namespace SwcsAPI.Controllers
         {
             try
             {
-                var allContainers = await unitOfWork.Containers.GetAllAsync();
+                var allContainers = await unitOfWork.Containers.GetAll().ToListAsync();
 
-                if (allContainers is null)
+                if (allContainers.Count == 0)
                 {
                     return NoContent();
                 }
@@ -70,16 +70,16 @@ namespace SwcsAPI.Controllers
         {
             try
             {
-                var existingContainer = await unitOfWork.Containers.GetByIdAsync((long)reqContainer.Id);
-                if (existingContainer == null)
+                var existingContainer = await unitOfWork.Containers.GetByIdAsync(reqContainer.Id);
+                if (existingContainer is null)
                 {
                     return BadRequest(new { Message = "Container doesn't exist." });
                 }
 
                 //Manuel mapping
-                existingContainer.ContainerName = reqContainer.ContainerName ?? existingContainer.ContainerName;
-                existingContainer.Latitude = reqContainer.Latitude != default ? reqContainer.Latitude : existingContainer.Latitude;
-                existingContainer.Longitude = reqContainer.Longitude != default ? reqContainer.Longitude : existingContainer.Longitude;
+                existingContainer.ContainerName = reqContainer.ContainerName;
+                existingContainer.Latitude = reqContainer.Latitude;
+                existingContainer.Longitude = reqContainer.Longitude;
 
                 unitOfWork.Containers.Update(existingContainer);
                 await unitOfWork.SaveAsync();
@@ -126,7 +126,7 @@ namespace SwcsAPI.Controllers
                 var containersOfVehicle = await unitOfWork.Containers.
                     GetListByExpression(x => x.VehicleId == vehicleId).ToListAsync();
 
-                if (containersOfVehicle is null)
+                if (containersOfVehicle.Count == 0)
                 {
                     return NoContent();
                 }
@@ -152,7 +152,7 @@ namespace SwcsAPI.Controllers
                    GetListByExpression(x => x.VehicleId == vehicleId).ToListAsync();
                 var containerCt = containersOfVehicle.Count;
 
-                if (containersOfVehicle is null)
+                if (containerCt == 0)
                 {
                     return NoContent();
                 }
@@ -162,7 +162,7 @@ namespace SwcsAPI.Controllers
                     return BadRequest(new { Message = "Number of clusters cannot be higher then " + containerCt / 2 });
                 }
 
-                var responseList = containersOfVehicle.ToClusters<Container>(n);
+                var responseList = containersOfVehicle.ToClusters(n);
                 return Ok(responseList);
             }
             catch (Exception ex)
