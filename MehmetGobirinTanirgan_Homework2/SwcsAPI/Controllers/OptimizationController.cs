@@ -21,7 +21,7 @@ namespace SwcsAPI.Controllers
         }
 
         [HttpGet("{vehicleId}/{n}")]// K Means algoritmasına göre n adet kümeye ayırma
-        public async Task<IActionResult> GetOptimizedClusters([FromRoute] long vehicleId, int n)
+        public async Task<IActionResult> GetOptimizedClusters([FromRoute] long vehicleId, [FromRoute] int n)
         {
             if (vehicleId <= 0 || n <= 0)
             {

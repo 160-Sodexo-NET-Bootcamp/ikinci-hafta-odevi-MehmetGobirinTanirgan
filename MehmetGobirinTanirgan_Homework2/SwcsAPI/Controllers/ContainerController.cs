@@ -139,7 +139,7 @@ namespace SwcsAPI.Controllers
         }
 
         [HttpGet("{vehicleId}/{n}")]// Gelen vehicle id'ye ait container'ları n adet eşit büyüklükte kümeye ayırma
-        public async Task<IActionResult> GetClusteredContainersOfVehicle([FromRoute] long vehicleId, int n)
+        public async Task<IActionResult> GetClusteredContainersOfVehicle([FromRoute] long vehicleId, [FromRoute] int n)
         {
             if (vehicleId <= 0 || n <= 0)
             {
