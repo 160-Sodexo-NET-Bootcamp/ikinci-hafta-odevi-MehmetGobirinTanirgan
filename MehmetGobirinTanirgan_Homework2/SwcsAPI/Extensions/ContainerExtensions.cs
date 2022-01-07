@@ -1,4 +1,5 @@
 ﻿using Data.DataModels;
+using Newtonsoft.Json;
 using SwcsAPI.HelperModels;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,13 @@ namespace SwcsAPI.Extensions
             do
             {
                 // Burada result listemin algoritmaya girmeden önceki anlık halini kopyalamış oldum.
-                snapshotOfClusteredContainers = clusteredContainers.ToList();
+                snapshotOfClusteredContainers = JsonConvert.DeserializeObject<List<List<Container>>>(JsonConvert.SerializeObject(clusteredContainers));
 
-                // Burada da her algoritma girişi öncesinde result listemi resetleyerek, boş n tane küme haline getirip,
-                // yeni oluşan küme merkezi koordinatlarına göre container'ların ilgili kümeye atılmasını sağladım.
-                clusteredContainers = new List<List<Container>>().ResetClusteredListOfContainer(n);
+                // Burada da her algoritma girişi öncesinde result listemi resetleyerek, yani kümeleri boşaltarak,
+                // yeni oluşan küme merkezi koordinatlarına göre container'ların tekrardan ilgili kümeye atılmasını sağlıyorum.
+                // Yani bir sil-doldur mantığı var. Çünkü benim için önemli olan küme merkezlerinin güncellenmesi,
+                // yeni merkezlere göre sürekli algoritmayı uygulamam gerekiyor.
+                clusteredContainers.ForEach(x => x.Clear());
 
                 for (int i = 0; i < containerCt; i++) // İşlemi listedeki tüm containerlar için yapacağım.
                 {
@@ -84,27 +87,13 @@ namespace SwcsAPI.Extensions
                  Math.Pow((double)(container.Longitude - clusterCenter.Longitude), 2));
         }
 
-        private static List<List<Container>> ResetClusteredListOfContainer(this List<List<Container>> clusteredContainers, int n)
-        {
-            //Burası sadece algoritmanın başlangıcında küme listesini boşaltmak amacıyla yapıldı.
-            for (int i = 0; i < n; i++)
-            {
-                clusteredContainers.Add(new List<Container>());
-            }
-            return clusteredContainers;
-        }
-
         private static bool IsItSame(this List<List<Container>> snapshot, List<List<Container>> current, int n)
         {
-            // Result listemdeki her bir küme(liste), bir önceki halinin kümeleriyle aynı ise true dön, değilse false dön.
-            for (int i = 0; i < n; i++)
-            {
-                if (!snapshot[i].SequenceEqual(current[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
+            // Burada listemin önceki hali ile son hali arasında fark var mı diye kontrol ediyorum. Eğer değişiklik yok ise
+            // küme merkezlerim stabil hale gelmiştir, artık sonuç değişmeyecektir. Bu noktada algoritma sonlanır.
+            var jsonSnapShot = JsonConvert.SerializeObject(snapshot);
+            var jsonCurrent = JsonConvert.SerializeObject(current);
+            return jsonSnapShot.Equals(jsonCurrent);
         }
         #endregion
     }
