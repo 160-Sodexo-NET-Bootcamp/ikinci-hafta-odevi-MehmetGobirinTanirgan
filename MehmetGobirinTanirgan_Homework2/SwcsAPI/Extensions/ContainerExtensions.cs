@@ -62,7 +62,7 @@ namespace SwcsAPI.Extensions
                     clusterCenters[indexForFarthestCluster] = clusteredContainers[indexForFarthestCluster].CalculateCenterOfCluster(); 
                 }
 
-            } while (!snapshotOfClusteredContainers.IsItSame(clusteredContainers, n));// Eğer ki yeni küme listem, bir önceki
+            } while (!snapshotOfClusteredContainers.IsItSame(clusteredContainers));// Eğer ki yeni küme listem, bir önceki
                                                                                       // süreçte ki haliyle aynı ise devam etme,
                                                                                       // döngüyü kır. Çünkü artık küme merkezleri
                                                                                       // değişmeyecek ve stabil bir sonuca
@@ -87,7 +87,7 @@ namespace SwcsAPI.Extensions
                  Math.Pow((double)(container.Longitude - clusterCenter.Longitude), 2));
         }
 
-        private static bool IsItSame(this List<List<Container>> snapshot, List<List<Container>> current, int n)
+        private static bool IsItSame(this List<List<Container>> snapshot, List<List<Container>> current)
         {
             // Burada listemin önceki hali ile son hali arasında fark var mı diye kontrol ediyorum. Eğer değişiklik yok ise
             // küme merkezlerim stabil hale gelmiştir, artık sonuç değişmeyecektir. Bu noktada algoritma sonlanır.
